@@ -1,11 +1,13 @@
 from django.core.mail import send_mail
 
+from ..celery_example.config import app_settings
+
 
 class EmailSender:
     subject = 'Тестовое сообщение'
     message = 'Привет, это тестовое сообщение.'
-    from_email = 'example_email@example.com'
+    from_email = app_settings.email_host_user
 
     @classmethod
     def send_email(cls, email):
-        send_mail(cls.subject, cls.message, email, [email])
+        send_mail(cls.subject, cls.message, cls.from_email, [email])
