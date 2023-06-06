@@ -1,10 +1,17 @@
 from smtplib import SMTPSenderRefused
 
+from django.http import HttpResponse
 from django.views.generic import CreateView
+from django.views.generic import View
 
 from .forms import ContactForm
 from .models import Contact
 from .service import EmailSender
+
+
+class HealthCheckView(View):
+    def get(self, request):
+        return HttpResponse("OK", status=200)
 
 
 class ContactView(CreateView):

@@ -1,21 +1,24 @@
-import os
-
 from dotenv import load_dotenv
 from pydantic import BaseSettings
-
-load_dotenv()
+from pydantic import Field
 
 
 class AppSettings(BaseSettings):
-    secret_key: str = os.getenv('SECRET_KEY')
-    email_host: str = os.getenv('EMAIL_HOST')
-    email_port: int = os.getenv('EMAIL_PORT')
-    email_host_user: str = os.getenv('EMAIL_HOST_USER')
-    email_host_password: str = os.getenv('EMAIL_HOST_PASSWORD')
+    secret_key: str = Field(..., env='SECRET_KEY')
+    email_host: str = Field(..., env='EMAIL_HOST')
+    email_port: int = Field(..., env='EMAIL_PORT')
+    email_host_user: str = Field(..., env='EMAIL_HOST_USER')
+    email_host_password: str = Field(..., env='EMAIL_HOST_PASSWORD')
+    debug: bool = Field(default=False, env='DJANGO_DEBUG')
+
+    @classmethod
+    def load(cls):
+        load_dotenv('.env')
+        return cls()
 
     class Config:
         env_file = '.env'
         env_file_encoding = 'utf-8'
 
 
-app_settings = AppSettings()
+app_settings = AppSettings.load()
