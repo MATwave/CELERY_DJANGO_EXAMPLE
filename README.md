@@ -43,5 +43,3 @@ make down
   ```
 
 </details>
-
----
