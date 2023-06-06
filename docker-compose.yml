@@ -1,12 +1,6 @@
 version: "3.9"
 
 services:
-  # Сервис Redis
-  redis:
-    image: redis
-    restart: always
-    ports:
-      - "6379:6379"
 
   # Сервис веб-приложения
   webapp:
@@ -22,3 +16,52 @@ services:
       timeout: 10s
       retries: 3
     restart: on-failure
+    networks:
+      - common_network
+
+  # Сервис Redis
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    depends_on:
+      - webapp
+    networks:
+      - common_network
+
+  # Сервис Celery
+  celery:
+    build: src/
+    container_name: celery
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - webapp
+    command: celery -A celery_example worker --loglevel=info
+    networks:
+      - common_network
+
+  # Сервис Flower
+  flower:
+    build: src/
+    container_name: flower
+    depends_on:
+      - redis
+      - webapp
+      - celery
+    ports:
+      - '5555:5555'
+    command: celery --broker=redis://redis:6379/0 flower --port=5555 --persistent=True
+    volumes:
+      - flower_data:/data
+    networks:
+      - common_network
+
+networks:
+  common_network:
+
+volumes:
+ flower_data:
+   driver: local

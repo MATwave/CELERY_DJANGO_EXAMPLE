@@ -1,6 +1,7 @@
 ADMIN_PANEL_DOCKER_COMPOSE_FILE = -f docker-compose.yml
 
 up:
+	cp .env.template .env
 	# Запуск контейнеров Docker в фоновом режиме и перестройка образов, если необходимо
 	docker compose $(APP_DOCKER_COMPOSE_FILE) up -d --build || \
 		(echo "Failed to start containers" && exit 1)

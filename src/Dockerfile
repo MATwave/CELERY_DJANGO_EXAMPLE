@@ -1,6 +1,8 @@
 # Используйте базовый образ Python
 FROM python:3.10
 
+ENV PYTHONUNBUFFERED 1
+
 # Установка зависимостей
 WORKDIR /app
 COPY pyproject.toml poetry.lock /app/

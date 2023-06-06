@@ -6,7 +6,8 @@ from django.views.generic import View
 
 from .forms import ContactForm
 from .models import Contact
-from .service import EmailSender
+from .tasks import send_test_email
+# from .service import EmailSender
 
 
 class HealthCheckView(View):
@@ -23,7 +24,8 @@ class ContactView(CreateView):
     def form_valid(self, form):
         form.save()
         try:
-            EmailSender.send_email(form.instance.email)
+            # EmailSender.send_email(form.instance.email) # этот способ повесит программу пока не отработает
+            send_test_email.delay(form.instance.email)  # этот способ зарегистрирует задачу, а отработает потом
         except SMTPSenderRefused:
             form.add_error(None, 'Не удалось отправить сообщение')
             return self.form_invalid(form)

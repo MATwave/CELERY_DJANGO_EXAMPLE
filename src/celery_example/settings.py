@@ -112,3 +112,10 @@ EMAIL_PORT = app_settings.email_port
 EMAIL_HOST_USER = app_settings.email_host_user
 EMAIL_HOST_PASSWORD = app_settings.email_host_password
 EMAIL_USE_TLS = True
+
+CELERY_BROKER_URL = app_settings.redis_url
+CELERY_RESULT_BACKEND = app_settings.redis_url
+# Автоматическое обнаружение и регистрация задач из приложений Django
+CELERY_IMPORTS = [
+    'main_app.tasks',  # Замените 'your_app' на имя вашего приложения Django
+]
